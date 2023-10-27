@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -18,7 +17,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   late TextEditingController controller;
 
-  MovieModel movie = MovieModel(
+  MovieModel movie = const MovieModel(
     adult: true,
     backdropPath: '/5QEtCBM6aXHftr7sgFxxUUl9Ej8.jpg',
     genreIds: [],
@@ -56,7 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(16),
               ),
               child: TextFormField(
@@ -84,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) => MovieItem(movie: movie),
               ),
             ),

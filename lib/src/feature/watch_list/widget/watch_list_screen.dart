@@ -1,11 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../common/model/movie_model.dart';
 import '../../../common/style/app_colors.dart';
-import '../../../common/style/app_icons.dart';
-import '../../../common/util/custom_extension.dart';
 import '../../widget/movie_item.dart';
 
 class WatchListScreen extends StatefulWidget {
@@ -16,7 +12,7 @@ class WatchListScreen extends StatefulWidget {
 }
 
 class _WatchListScreenState extends State<WatchListScreen> {
-  MovieModel movie = MovieModel(
+  MovieModel movie = const MovieModel(
     adult: true,
     backdropPath: '/5QEtCBM6aXHftr7sgFxxUUl9Ej8.jpg',
     genreIds: [],
@@ -38,7 +34,7 @@ class _WatchListScreenState extends State<WatchListScreen> {
     return Scaffold(
       backgroundColor: AppColors.main,
       body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         itemBuilder: (context, index) => MovieItem(movie: movie),
       ),
     );

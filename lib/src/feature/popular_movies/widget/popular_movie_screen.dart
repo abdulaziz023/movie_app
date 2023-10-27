@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -26,7 +25,7 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
               width: double.infinity,
               height: 50,
               child: DecoratedBox(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.searchBG,
                   borderRadius: BorderRadius.all(
                     Radius.circular(16),
@@ -44,10 +43,10 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
@@ -55,10 +54,10 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                 ),
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {},
-                  borderRadius: BorderRadius.all(
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(16),
                   ),
-                  child: DecoratedBox(
+                  child: const DecoratedBox(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(
                         Radius.circular(16),
