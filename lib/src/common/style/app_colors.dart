@@ -7,4 +7,10 @@ final class AppColors {
   static const white = Color(0xFFFFFFFF);
   static const blue = Color(0xFF0296E5);
   static const transparent = Color(0x00000000);
+
+  static const searchBG = Color(0xFF3A3F47);
+
+  static const textUnselected = Color(0xFF67686D);
+
+  static const yellow = Color(0xFFFF8700);
 }

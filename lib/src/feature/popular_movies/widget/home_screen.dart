@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../common/service/app_icons.dart';
 import '../../../common/style/app_colors.dart';
+import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
+import '../../search/widget/search_screen.dart';
+import '../../watch_list/widget/watch_list_screen.dart';
+import 'popular_movie_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -64,9 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: controller,
         physics: const NeverScrollableScrollPhysics(),
         children: const [
-          ColoredBox(color: Colors.red),
-          ColoredBox(color: Colors.yellow),
-          ColoredBox(color: Colors.green),
+          PopularMovieScreen(),
+          SearchScreen(),
+          WatchListScreen(),
         ],
       ),
       bottomNavigationBar: ColoredBox(
