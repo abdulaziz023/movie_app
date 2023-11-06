@@ -12,22 +12,23 @@ class App extends StatelessWidget {
       title: 'MovieApp',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: AppColors.main,
-        fontFamily: 'Poppins',
-        navigationBarTheme: const NavigationBarThemeData(
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          elevation: 2,
-          backgroundColor: AppColors.main,
-          indicatorColor: AppColors.main,
-          indicatorShape: CircleBorder(),
-          labelTextStyle: MaterialStatePropertyAll(
-            TextStyle(
+          useMaterial3: true,
+          colorSchemeSeed: AppColors.main,
+          fontFamily: 'Poppins',
+          appBarTheme: const AppBarTheme(
+              iconTheme: IconThemeData(
+            color: AppColors.white,
+          )),
+          navigationBarTheme: const NavigationBarThemeData(
+            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            elevation: 2,
+            backgroundColor: AppColors.main,
+            indicatorColor: AppColors.main,
+            indicatorShape: CircleBorder(),
+            labelTextStyle: MaterialStatePropertyAll(TextStyle(
               color: AppColors.blue,
-            )
-          ),
-        )
-      ),
+            )),
+          )),
       home: const HomeScreen(),
     );
   }

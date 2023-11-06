@@ -27,7 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
     overview: '',
     popularity: 7000,
     posterPath: '/uQBbjrLVsUibWxNDGA4Czzo8lwz.jpg',
-    releaseDate: '1200',
+    releaseDate: '2021',
     title: 'Spiderman',
     video: true,
     voteAverage: 6.6,

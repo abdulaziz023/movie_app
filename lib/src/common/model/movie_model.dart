@@ -37,7 +37,7 @@ class MovieModel {
   factory MovieModel.fromJson(Map<String, Object?> json) => MovieModel(
         adult: (json['adult'] as bool?)!,
         backdropPath: (json['backdrop_path'] as String?)!,
-        genreIds: json['genre_ids'] != null ? List<int>.from((json['genreIds'] as List?)!) : [],
+        genreIds: json['genre_ids'] != null ? List<int>.from((json['genre_ids'] as List?)!) : [],
         id: (json['id'] as int?)!,
         originalLanguage: (json['original_language'] as String?)!,
         originalTitle: (json['original_title'] as String?)!,
@@ -47,8 +47,8 @@ class MovieModel {
         releaseDate: (json['release_date'] as String?)!,
         title: (json['title'] as String?)!,
         video: (json['video'] as bool?)!,
-        voteAverage: (json['vote_average'] as double?)!,
-        voteCount: (json['voteCount'] as int?)!,
+        voteAverage: double.parse((json['vote_average'] as num?)!.toString()),
+        voteCount: (json['vote_count'] as int?)!,
       );
   
   Map<String, Object?> toJson() => {

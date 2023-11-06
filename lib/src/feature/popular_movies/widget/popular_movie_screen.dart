@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../common/constant/api_const.dart';
+import '../../../common/model/movie_model.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
+import '../../detail/widget/movie_detail_screen.dart';
+import '../data/popular_repository.dart';
 
 class PopularMovieScreen extends StatefulWidget {
   const PopularMovieScreen({super.key});
@@ -13,6 +17,21 @@ class PopularMovieScreen extends StatefulWidget {
 }
 
 class _PopularMovieScreenState extends State<PopularMovieScreen> {
+  late final IPopularRepository repository;
+
+  List<MovieModel> movies = [];
+
+  @override
+  void initState() {
+    super.initState();
+    repository = const PopularRepository();
+    getMovies();
+  }
+
+  void getMovies() async {
+    movies = await repository.getMovies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,21 +71,25 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                   crossAxisSpacing: 8,
                   childAspectRatio: 1 / 1.4,
                 ),
+                itemCount: movies.length,
                 itemBuilder: (context, index) => InkWell(
-                  onTap: () {},
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MovieDetailScreen(movie: movies[index]),
+                    ),
+                  ),
                   borderRadius: const BorderRadius.all(
                     Radius.circular(16),
                   ),
-                  child: const DecoratedBox(
+                  child: DecoratedBox(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(16),
                       ),
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(
-                          'https://th.bing.com/th/id/R.67f3c87884436a35cf9991d13adf93fd?rik=tB9ndMh9dfvhAg&pid=ImgRaw&r=0',
-                        ),
+                        image: NetworkImage(ApiConst.imageLoadEntry + movies[index].posterPath),
                       ),
                     ),
                   ),
