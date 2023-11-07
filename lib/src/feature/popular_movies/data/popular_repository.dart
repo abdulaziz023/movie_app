@@ -5,17 +5,18 @@ import '../../../common/model/movie_model.dart';
 import '../../../common/service/api_service.dart';
 
 abstract interface class IPopularRepository {
-  Future<List<MovieModel>> getMovies();
+  Future<List<MovieModel>> getMovies(int page);
 }
 
 class PopularRepository implements IPopularRepository {
   const PopularRepository();
 
   @override
-  Future<List<MovieModel>> getMovies() async {
+  Future<List<MovieModel>> getMovies(int page) async {
     final response = await ApiService.request(
       ApiConst.popularPath,
       queryParameters: {
+        ...ApiConst.pagination(page),
         ...ApiConst.regionQuery,
         ...ApiConst.apiKeyQuery,
       },

@@ -15,4 +15,8 @@ class ApiConst {
   static const apiKeyQuery = {
     'api_key': Config.apiKey,
   };
+
+  static Map<String, String> pagination(int page) => {
+    'page': '$page',
+  };
 }

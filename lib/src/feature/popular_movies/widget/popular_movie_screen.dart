@@ -17,19 +17,36 @@ class PopularMovieScreen extends StatefulWidget {
 }
 
 class _PopularMovieScreenState extends State<PopularMovieScreen> {
+  late final ScrollController controller;
+
   late final IPopularRepository repository;
 
-  List<MovieModel> movies = [];
+  final List<MovieModel> movies = [];
+  int page = 1;
 
   @override
   void initState() {
     super.initState();
+    controller = ScrollController()..addListener(pagination);
     repository = const PopularRepository();
     getMovies();
   }
 
   void getMovies() async {
-    movies = await repository.getMovies();
+    movies.addAll(await repository.getMovies(page++));
+    setState(() {});
+  }
+
+  void pagination() {
+    if (controller.position.pixels == controller.position.maxScrollExtent) {
+      getMovies();
+    }
+  }
+
+  @override
+  void dispose() {
+    controller..removeListener(pagination)..dispose();
+    super.dispose();
   }
 
   @override
@@ -64,32 +81,42 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: 1 / 1.4,
-                ),
-                itemCount: movies.length,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieDetailScreen(movie: movies[index]),
-                    ),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  page = 1;
+                  movies.clear();
+                  getMovies();
+                },
+                child: GridView.builder(
+                  controller: controller,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    childAspectRatio: 1 / 1.4,
                   ),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(16),
-                  ),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(16),
+                  itemCount: movies.length,
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            MovieDetailScreen(movie: movies[index]),
                       ),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(ApiConst.imageLoadEntry + movies[index].posterPath),
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(16),
+                    ),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(16),
+                        ),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              ApiConst.imageLoadEntry + movies[index].posterPath),
+                        ),
                       ),
                     ),
                   ),
