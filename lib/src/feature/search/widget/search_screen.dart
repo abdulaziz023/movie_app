@@ -5,7 +5,9 @@ import '../../../common/model/movie_model.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
+import '../../popular_movies/widget/home_screen.dart';
 import '../../widget/movie_item.dart';
+import '../data/search_repository.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -15,39 +17,57 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  late TextEditingController controller;
+  late final ISearchRepository repository;
 
-  MovieModel movie = const MovieModel(
-    adult: true,
-    backdropPath: '/5QEtCBM6aXHftr7sgFxxUUl9Ej8.jpg',
-    genreIds: [],
-    id: 1,
-    originalLanguage: 'en',
-    originalTitle: '',
-    overview: '',
-    popularity: 7000,
-    posterPath: '/uQBbjrLVsUibWxNDGA4Czzo8lwz.jpg',
-    releaseDate: '2021',
-    title: 'Spiderman',
-    video: true,
-    voteAverage: 6.6,
-    voteCount: 100,
-  );
+  late final ScrollController controller;
+
+  List<MovieModel> movies = [];
+  String searchText = '';
+  int page = 1;
+
+  void onChange(String value) async {
+    searchText = value;
+    page = 1;
+
+    movies = await repository.getMovies(
+      page: page++,
+      text: searchText,
+    );
+
+    setState(() {});
+  }
+
+  void pagination() async {
+    if (controller.position.pixels == controller.position.maxScrollExtent) {
+      movies.addAll(
+        await repository.getMovies(
+          page: page++,
+          text: searchText,
+        ),
+      );
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController();
+    repository = SearchRepository();
+    controller = ScrollController()..addListener(pagination);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller
+      ..removeListener(pagination)
+      ..dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final focus = context.findAncestorStateOfType<HomeScreenState>()?.focus;
+
     return Scaffold(
       backgroundColor: AppColors.main,
       body: Padding(
@@ -59,11 +79,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 Radius.circular(16),
               ),
               child: TextFormField(
-                controller: controller,
+                focusNode: focus,
                 style: context.textTheme.bodyMedium?.copyWith(
                   color: AppColors.white,
                 ),
                 textAlignVertical: TextAlignVertical.center,
+                onChanged: onChange,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Search',
@@ -82,14 +103,85 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemBuilder: (context, index) => MovieItem(movie: movie),
+              child: SearchBody(
+                movies: movies,
+                isTyped: searchText.isNotEmpty,
+                controller: controller,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+class SearchBody extends StatelessWidget {
+  const SearchBody({
+    required this.movies,
+    required this.isTyped,
+    required this.controller,
+    super.key,
+  });
+
+  final ScrollController controller;
+  final List<MovieModel> movies;
+  final bool isTyped;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isTyped && movies.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: Text(
+            'Find your movie by Type title, categories, years, etc',
+            textAlign: TextAlign.center,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: AppColors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+    } else if (isTyped && movies.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(60.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(AppIcons.noResult),
+              Text(
+                'We Are Sorry, We Can Not Find The Movie :(',
+                textAlign: TextAlign.center,
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                'Find your movie by Type title, categories, years, etc',
+                textAlign: TextAlign.center,
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: AppColors.greyText,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return ListView.builder(
+        padding: const EdgeInsets.all(8),
+        controller: controller,
+        itemCount: movies.length,
+        itemBuilder: (context, index) => MovieItem(
+          movie: movies[index],
+        ),
+      );
+    }
   }
 }

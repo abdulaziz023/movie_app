@@ -14,4 +14,6 @@ final class AppColors {
   static const textUnselected = Color(0xFF67686D);
 
   static const yellow = Color(0xFFFF8700);
+
+  static const greyText = Color(0xFF92929D);
 }

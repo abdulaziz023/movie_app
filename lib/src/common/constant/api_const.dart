@@ -19,4 +19,10 @@ class ApiConst {
   static Map<String, String> pagination(int page) => {
     'page': '$page',
   };
+
+  static const searchPath = '/3/search/movie';
+  static Map<String, String> searchQuery(int page, String text) => {
+    'query': text,
+    'page': '$page',
+  };
 }

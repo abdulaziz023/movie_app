@@ -12,12 +12,14 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   late final PageController controller;
   int pageNumber = 0;
+
+  late final FocusNode focus;
 
   void pageChange(int index) {
     pageNumber = index;
@@ -35,11 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     controller = PageController();
+    focus = FocusNode(debugLabel: 'search_text_field_focus');
   }
 
   @override
   void dispose() {
     controller.dispose();
+    focus.dispose();
     super.dispose();
   }
 

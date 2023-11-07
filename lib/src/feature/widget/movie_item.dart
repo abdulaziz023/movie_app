@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/constant/api_const.dart';
+import '../../common/constant/config.dart';
 import '../../common/model/movie_model.dart';
 import '../../common/style/app_colors.dart';
 import '../../common/util/custom_extension.dart';
@@ -27,11 +28,11 @@ class MovieItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0),
         child: SizedBox(
-          height: 150,
+          height: 180,
           child: Row(
             children: [
               AspectRatio(
-                aspectRatio: 1 / 1.3,
+                aspectRatio: 1 / 1.2,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(
@@ -39,7 +40,11 @@ class MovieItem extends StatelessWidget {
                     ),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(ApiConst.imageLoadEntry + movie.posterPath),
+                      image: NetworkImage(
+                        movie.posterPath != null
+                            ? ApiConst.imageLoadEntry + movie.posterPath!
+                            : Config.noImage,
+                      ),
                     ),
                   ),
                 ),
@@ -52,11 +57,12 @@ class MovieItem extends StatelessWidget {
                   children: [
                     Text(
                       movie.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: context.textTheme.titleLarge?.copyWith(
                         color: AppColors.white,
                       ),
                     ),
-                    const SizedBox(height: 10),
                     MovieDetailWidget(
                       color: AppColors.yellow,
                       icon: CupertinoIcons.star,

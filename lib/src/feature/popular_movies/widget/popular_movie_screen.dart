@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../common/constant/api_const.dart';
+import '../../../common/constant/config.dart';
 import '../../../common/model/movie_model.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
 import '../../detail/widget/movie_detail_screen.dart';
 import '../data/popular_repository.dart';
+import 'home_screen.dart';
 
 class PopularMovieScreen extends StatefulWidget {
   const PopularMovieScreen({super.key});
@@ -43,9 +45,18 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
     }
   }
 
+  void openSearch() {
+    final state = context.findAncestorStateOfType<HomeScreenState>();
+
+    state?.pageChange(1);
+    state?.focus.requestFocus();
+  }
+
   @override
   void dispose() {
-    controller..removeListener(pagination)..dispose();
+    controller
+      ..removeListener(pagination)
+      ..dispose();
     super.dispose();
   }
 
@@ -75,7 +86,12 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                     ),
                   ),
                   trailing: SvgPicture.asset(AppIcons.search),
-                  onTap: () {},
+                  onTap: openSearch,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(16),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -115,7 +131,8 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
-                              ApiConst.imageLoadEntry + movies[index].posterPath),
+                           movies[index].posterPath != null? ApiConst.imageLoadEntry + movies[index].posterPath! : Config.noImage,
+                          ),
                         ),
                       ),
                     ),

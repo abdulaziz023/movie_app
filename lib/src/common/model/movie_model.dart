@@ -20,14 +20,14 @@ class MovieModel {
   });
 
   final bool adult;
-  final String backdropPath;
+  final String? backdropPath;
   final List<int> genreIds;
   final int id;
   final String originalLanguage;
   final String originalTitle;
   final String overview;
   final double popularity;
-  final String posterPath;
+  final String? posterPath;
   final String releaseDate;
   final String title;
   final bool video;
@@ -36,14 +36,14 @@ class MovieModel {
 
   factory MovieModel.fromJson(Map<String, Object?> json) => MovieModel(
         adult: (json['adult'] as bool?)!,
-        backdropPath: (json['backdrop_path'] as String?)!,
+        backdropPath: (json['backdrop_path'] as String?),
         genreIds: json['genre_ids'] != null ? List<int>.from((json['genre_ids'] as List?)!) : [],
         id: (json['id'] as int?)!,
         originalLanguage: (json['original_language'] as String?)!,
         originalTitle: (json['original_title'] as String?)!,
         overview: (json['overview'] as String?)!,
         popularity: (json['popularity'] as double?)!,
-        posterPath: (json['poster_path'] as String?)!,
+        posterPath: (json['poster_path'] as String?),
         releaseDate: (json['release_date'] as String?)!,
         title: (json['title'] as String?)!,
         video: (json['video'] as bool?)!,

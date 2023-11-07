@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../common/model/movie_model.dart';
 import '../../../common/style/app_colors.dart';
+import '../../../common/style/app_icons.dart';
+import '../../../common/util/custom_extension.dart';
 import '../../widget/movie_item.dart';
 
 class WatchListScreen extends StatefulWidget {
@@ -12,31 +15,48 @@ class WatchListScreen extends StatefulWidget {
 }
 
 class _WatchListScreenState extends State<WatchListScreen> {
-  MovieModel movie = const MovieModel(
-    adult: true,
-    backdropPath: '/5QEtCBM6aXHftr7sgFxxUUl9Ej8.jpg',
-    genreIds: [],
-    id: 1,
-    originalLanguage: 'en',
-    originalTitle: '',
-    overview: '',
-    popularity: 7000,
-    posterPath: '/uQBbjrLVsUibWxNDGA4Czzo8lwz.jpg',
-    releaseDate: '1200',
-    title: 'Spiderman',
-    video: true,
-    voteAverage: 6.6,
-    voteCount: 100,
-  );
+  final List<MovieModel> movies = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.main,
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        itemBuilder: (context, index) => MovieItem(movie: movie),
-      ),
+      body: movies.isEmpty
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(AppIcons.emptyBox),
+                    Text(
+                      'There is no movie yet!',
+                      textAlign: TextAlign.center,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Find your movie by Type title, categories, years, etc',
+                      textAlign: TextAlign.center,
+                      style: context.textTheme.titleSmall?.copyWith(
+                        color: AppColors.greyText,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              itemCount: movies.length,
+              itemBuilder: (context, index) => MovieItem(
+                movie: movies[index],
+              ),
+            ),
     );
   }
 }
