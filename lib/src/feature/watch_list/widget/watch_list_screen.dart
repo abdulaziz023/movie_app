@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../common/model/movie_model.dart';
+import '../../../common/service/db_service.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
@@ -11,11 +14,35 @@ class WatchListScreen extends StatefulWidget {
   const WatchListScreen({super.key});
 
   @override
-  State<WatchListScreen> createState() => _WatchListScreenState();
+  State<WatchListScreen> createState() => WatchListScreenState();
 }
 
-class _WatchListScreenState extends State<WatchListScreen> {
+class WatchListScreenState extends State<WatchListScreen> {
   final List<MovieModel> movies = [];
+
+  void getMovies() async {
+    movies.clear();
+
+    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+
+    if (storedMovies != null) {
+      for (final e in storedMovies) {
+        final json =
+        const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
+        final model = MovieModel.fromJson(json);
+
+        movies.add(model);
+      }
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getMovies();
+  }
 
   @override
   Widget build(BuildContext context) {

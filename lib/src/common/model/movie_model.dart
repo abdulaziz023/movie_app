@@ -65,7 +65,7 @@ class MovieModel {
   'title': title,
   'video': video,
   'vote_average': voteAverage,
-  'voteCount': voteCount,
+  'vote_count': voteCount,
   };
 
   @override
@@ -124,27 +124,3 @@ class MovieModel {
         'voteCount: $voteCount)';
   }
 }
-
-/*
-{
-"adult": false,
-"backdropPath": "/5QEtCBM6aXHftr7sgFxxUUl9Ej8.jpg",
-"genreIds": [
-80,
-18,
-53,
-28
-],
-"id": 75780,
-"originalLanguage": "en",
-"originalTitle": "Jack Reacher",
-"overview": "When a gunman takes five lives with six shots, all evidence points to the suspect in custody. On interrogation, the suspect offers up a single note: \"Get Jack Reacher!\" So begins an extraordinary chase for the truth, pitting Jack Reacher against an unexpected enemy, with a skill for violence and a secret to keep.",
-"popularity": 41.105,
-"posterPath": "/uQBbjrLVsUibWxNDGA4Czzo8lwz.jpg",
-"releaseDate": "2012-12-20",
-"title": "Jack Reacher",
-"video": false,
-"voteAverage": 6.609,
-"voteCount": 6517
-}
-*/

@@ -7,6 +7,7 @@ import '../../common/model/movie_model.dart';
 import '../../common/style/app_colors.dart';
 import '../../common/util/custom_extension.dart';
 import '../detail/widget/movie_detail_screen.dart';
+import '../watch_list/widget/watch_list_screen.dart';
 
 class MovieItem extends StatelessWidget {
   const MovieItem({
@@ -19,12 +20,18 @@ class MovieItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MovieDetailScreen(movie: movie),
-        ),
-      ),
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MovieDetailScreen(movie: movie),
+          ),
+        );
+
+        if (context.mounted) {
+          context.findAncestorStateOfType<WatchListScreenState>()?.getMovies();
+        }
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0),
         child: SizedBox(
@@ -74,7 +81,7 @@ class MovieItem extends StatelessWidget {
                     ),
                     MovieDetailWidget(
                       icon: CupertinoIcons.calendar,
-                      text: movie.releaseDate.substring(0, 4),
+                      text: movie.releaseDate.isNotEmpty ? movie.releaseDate.substring(0, 4) : 'Not released',
                     ),
                     MovieDetailWidget(
                       icon: CupertinoIcons.globe,

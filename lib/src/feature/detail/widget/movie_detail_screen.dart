@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../../../common/constant/api_const.dart';
 import '../../../common/constant/config.dart';
 import '../../../common/model/movie_model.dart';
+import '../../../common/service/db_service.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/util/custom_extension.dart';
 
@@ -21,6 +24,75 @@ class MovieDetailScreen extends StatefulWidget {
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
   bool isSelected = false;
 
+  void saveToStorage() async {
+    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+    final stringModel = jsonEncode(widget.movie.toJson());
+
+    (await $storage).setStringList(
+      StorageKeys.movies.key,
+      [stringModel, ...?storedMovies],
+    );
+  }
+
+  void deleteFromStorage() async {
+    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+    final moviesModelList = <String>[];
+
+    if (storedMovies != null) {
+      for (final e in storedMovies) {
+        final json =
+            const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
+        final model = MovieModel.fromJson(json);
+
+        if (widget.movie.id != model.id) {
+          moviesModelList.add(e);
+        }
+      }
+
+      (await $storage).setStringList(
+        StorageKeys.movies.key,
+        moviesModelList,
+      );
+    }
+  }
+
+  void isExist() async {
+    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+
+    if (storedMovies != null) {
+      for (final e in storedMovies) {
+        final json =
+            const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
+        final model = MovieModel.fromJson(json);
+
+        if (widget.movie.id == model.id) {
+          isSelected = true;
+          break;
+        }
+      }
+    }
+
+    setState(() {});
+  }
+
+  void savePressed() {
+    setState(() {
+      isSelected = !isSelected;
+    });
+
+    if (isSelected) {
+      saveToStorage();
+    } else {
+      deleteFromStorage();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isExist();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +108,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                isSelected = !isSelected;
-              });
-            },
+            onPressed: savePressed,
             icon: const Icon(
               Icons.bookmark_border,
               size: 28,
