@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
 import '../constant/config.dart';
+import '../util/exceptions.dart';
+import 'custom_interceptor.dart';
 
 enum Method {
   get,
@@ -23,7 +26,14 @@ class ApiService {
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
       contentType: 'application/json',
-    );
+    )
+    ..interceptors.add(const CustomInterceptor());
+
+  static Future<bool> _hasConnection() async {
+    final result = await (Connectivity().checkConnectivity());
+    if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) return true;
+    return false;
+  }
 
   static Future<String> request(
     String path, {
@@ -33,6 +43,10 @@ class ApiService {
     Object? body,
     FormData? formData,
   }) async {
+    if (!(await _hasConnection())) {
+      throw Error.throwWithStackTrace(const ConnectionExcaption(), StackTrace.current);
+    }
+
     final newHeaders = {
       HttpHeaders.authorizationHeader: Config.clientID,
       HttpHeaders.contentTypeHeader: formData != null ? Headers.multipartFormDataContentType : Headers.jsonContentType,
@@ -48,14 +62,6 @@ class ApiService {
         headers: newHeaders,
       ),
     );
-
-    print('''
-------------------------------------------------------------
-        === Response (${response.statusCode}) === 
-        === Url: ${response.realUri} ===
-        === Method (${response.requestOptions.method}) ===
-        === Data: ${response.data}
-------------------------------------------------------------''');
 
     return jsonEncode(response.data);
   }

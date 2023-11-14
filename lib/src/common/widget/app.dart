@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../feature/popular_movies/widget/home_screen.dart';
+import '../localization/app_localizations.dart';
 import '../style/app_colors.dart';
 
 class App extends StatelessWidget {
@@ -11,6 +12,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'MovieApp',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('uz'),
       theme: ThemeData(
           useMaterial3: true,
           colorSchemeSeed: AppColors.main,

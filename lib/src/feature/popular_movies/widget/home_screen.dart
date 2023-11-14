@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../common/localization/app_localizations.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
@@ -57,14 +58,14 @@ class HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: Text(
           switch (pageNumber) {
-            0 => 'What do you want to watch?',
+            0 => AppLocalizations.of(context).whatToWatch,
             1 => 'Search',
             2 => 'Watch list',
             _ => '',
           },
           style: context.textTheme.titleMedium?.copyWith(
-                color: AppColors.white,
-              ),
+            color: AppColors.white,
+          ),
         ),
       ),
       body: PageView(
