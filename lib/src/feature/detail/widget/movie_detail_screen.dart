@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import '../../../common/constant/api_const.dart';
@@ -22,53 +20,19 @@ class MovieDetailScreen extends StatefulWidget {
 }
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
-  ValueNotifier<bool> isSelected = ValueNotifier<bool>(false);
+   final ValueNotifier<bool> isSelected = ValueNotifier(false);
 
   void saveToStorage() async {
-    final storedMovies = $storage.getStringList(StorageKeys.movies.key);
-    final stringModel = jsonEncode(widget.movie.toJson());
-
-    await $storage.setStringList(
-      StorageKeys.movies.key,
-      [stringModel, ...?storedMovies],
-    );
+    final movie = widget.movie.copyWith(isSelected: isSelected.value);
+    await DBService().insert(movie.toMap());
   }
 
   void deleteFromStorage() async {
-    final storedMovies = $storage.getStringList(StorageKeys.movies.key);
-    final moviesModelList = <String>[];
-
-    if (storedMovies != null) {
-      for (final e in storedMovies) {
-        final json = const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
-        final model = MovieModel.fromJson(json);
-
-        if (widget.movie.id != model.id) {
-          moviesModelList.add(e);
-        }
-      }
-
-      await $storage.setStringList(
-        StorageKeys.movies.key,
-        moviesModelList,
-      );
-    }
+    await DBService().delete(widget.movie.id);
   }
 
   void isExist() async {
-    final storedMovies = $storage.getStringList(StorageKeys.movies.key);
-
-    if (storedMovies != null) {
-      for (final e in storedMovies) {
-        final json = const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
-        final model = MovieModel.fromJson(json);
-
-        if (widget.movie.id == model.id) {
-          isSelected.value = true;
-          break;
-        }
-      }
-    }
+    isSelected.value = (await DBService().getMovie(widget.movie.id))?.isSelected ?? false;
   }
 
   void savePressed() {

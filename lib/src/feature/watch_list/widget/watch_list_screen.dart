@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,17 +21,7 @@ class WatchListScreenState extends State<WatchListScreen> {
   void getMovies() async {
     movies.clear();
 
-    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
-
-    if (storedMovies != null) {
-      for (final e in storedMovies) {
-        final json =
-        const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
-        final model = MovieModel.fromJson(json);
-
-        movies.add(model);
-      }
-    }
+    movies.addAll((await DBService().getMovies()).reversed);
 
     setState(() {});
   }
