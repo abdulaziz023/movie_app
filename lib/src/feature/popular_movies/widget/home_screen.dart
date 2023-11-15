@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../common/localization/app_localizations.dart';
+import '../../../common/service/db_service.dart';
 import '../../../common/style/app_colors.dart';
 import '../../../common/style/app_icons.dart';
 import '../../../common/util/custom_extension.dart';
+import '../../../common/widget/app.dart';
 import '../../search/widget/search_screen.dart';
 import '../../watch_list/widget/watch_list_screen.dart';
 import 'popular_movie_screen.dart';
@@ -58,7 +59,7 @@ class HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: Text(
           switch (pageNumber) {
-            0 => AppLocalizations.of(context).whatToWatch,
+            0 => context.l10n.whatToWatch,
             1 => 'Search',
             2 => 'Watch list',
             _ => '',
@@ -67,6 +68,39 @@ class HomeScreenState extends State<HomeScreen> {
             color: AppColors.white,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog.adaptive(
+                title: const Text('Choose language'),
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      context.findAncestorStateOfType<AppState>()?.changeLocale(const Locale('en'));
+                      await $storage.setString(StorageKeys.language.key, 'en');
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('English'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      context.findAncestorStateOfType<AppState>()?.changeLocale(const Locale('uz'));
+                      await $storage.setString(StorageKeys.language.key, 'uz');
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('O`zbekcha'),
+                  ),
+                ],
+              ),
+            ),
+            icon: const Icon(Icons.language),
+          ),
+        ],
       ),
       body: PageView(
         controller: controller,

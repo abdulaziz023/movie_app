@@ -22,26 +22,25 @@ class MovieDetailScreen extends StatefulWidget {
 }
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
-  bool isSelected = false;
+  ValueNotifier<bool> isSelected = ValueNotifier<bool>(false);
 
   void saveToStorage() async {
-    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+    final storedMovies = $storage.getStringList(StorageKeys.movies.key);
     final stringModel = jsonEncode(widget.movie.toJson());
 
-    (await $storage).setStringList(
+    await $storage.setStringList(
       StorageKeys.movies.key,
       [stringModel, ...?storedMovies],
     );
   }
 
   void deleteFromStorage() async {
-    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+    final storedMovies = $storage.getStringList(StorageKeys.movies.key);
     final moviesModelList = <String>[];
 
     if (storedMovies != null) {
       for (final e in storedMovies) {
-        final json =
-            const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
+        final json = const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
         final model = MovieModel.fromJson(json);
 
         if (widget.movie.id != model.id) {
@@ -49,7 +48,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         }
       }
 
-      (await $storage).setStringList(
+      await $storage.setStringList(
         StorageKeys.movies.key,
         moviesModelList,
       );
@@ -57,30 +56,25 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   void isExist() async {
-    final storedMovies = (await $storage).getStringList(StorageKeys.movies.key);
+    final storedMovies = $storage.getStringList(StorageKeys.movies.key);
 
     if (storedMovies != null) {
       for (final e in storedMovies) {
-        final json =
-            const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
+        final json = const JsonDecoder().cast<String, Map<String, Object?>>().convert(e);
         final model = MovieModel.fromJson(json);
 
         if (widget.movie.id == model.id) {
-          isSelected = true;
+          isSelected.value = true;
           break;
         }
       }
     }
-
-    setState(() {});
   }
 
   void savePressed() {
-    setState(() {
-      isSelected = !isSelected;
-    });
+    isSelected.value = !isSelected.value;
 
-    if (isSelected) {
+    if (isSelected.value) {
       saveToStorage();
     } else {
       deleteFromStorage();
@@ -91,6 +85,12 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   void initState() {
     super.initState();
     isExist();
+  }
+
+  @override
+  void dispose() {
+    isSelected.dispose();
+    super.dispose();
   }
 
   @override
@@ -107,17 +107,20 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: savePressed,
-            icon: const Icon(
-              Icons.bookmark_border,
-              size: 28,
+          ValueListenableBuilder(
+            valueListenable: isSelected,
+            builder: (context, value, child) => IconButton(
+              onPressed: savePressed,
+              icon: const Icon(
+                Icons.bookmark_border,
+                size: 28,
+              ),
+              selectedIcon: const Icon(
+                Icons.bookmark,
+                size: 28,
+              ),
+              isSelected: value,
             ),
-            selectedIcon: const Icon(
-              Icons.bookmark,
-              size: 28,
-            ),
-            isSelected: isSelected,
           ),
         ],
       ),
@@ -140,8 +143,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                           fit: BoxFit.cover,
                           image: NetworkImage(
                             widget.movie.backdropPath != null
-                                ? ApiConst.imageLoadEntry +
-                                    widget.movie.backdropPath!
+                                ? ApiConst.imageLoadEntry + widget.movie.backdropPath!
                                 : Config.noImage,
                           ),
                         ),
@@ -177,8 +179,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 190, top: 20, right: 10),
+                    padding: const EdgeInsets.only(left: 190, top: 20, right: 10),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
@@ -230,8 +231,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       image: DecorationImage(
                         image: NetworkImage(
                           widget.movie.posterPath != null
-                              ? ApiConst.imageLoadEntry +
-                                  widget.movie.posterPath!
+                              ? ApiConst.imageLoadEntry + widget.movie.posterPath!
                               : Config.noImage,
                         ),
                         fit: BoxFit.cover,

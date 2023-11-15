@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum StorageKeys {
+  language('language'),
   movies('movies');
 
   const StorageKeys(this.key);
@@ -8,4 +9,4 @@ enum StorageKeys {
   final String key;
 }
 
-final $storage = SharedPreferences.getInstance();
+late final SharedPreferences $storage;
