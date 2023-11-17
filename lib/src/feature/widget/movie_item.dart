@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,7 @@ import '../../common/constant/config.dart';
 import '../../common/model/movie_model.dart';
 import '../../common/style/app_colors.dart';
 import '../../common/util/custom_extension.dart';
+import '../../common/util/shimmer.dart';
 import '../detail/widget/movie_detail_screen.dart';
 import '../watch_list/widget/watch_list_screen.dart';
 
@@ -38,21 +40,19 @@ class MovieItem extends StatelessWidget {
           height: 180,
           child: Row(
             children: [
-              AspectRatio(
-                aspectRatio: 1 / 1.2,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(16),
-                    ),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        movie.posterPath != null
-                            ? ApiConst.imageLoadEntry + movie.posterPath!
-                            : Config.noImage,
-                      ),
-                    ),
+              SizedBox(
+                width: 130,
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  child: CachedNetworkImage(
+                     imageUrl: movie.posterPath != null
+                         ? ApiConst.imageLoadEntry + movie.posterPath!
+                         : Config.noImage,
+                    placeholder: (context, url)=>ShimmerLoading(size: Size.infinite),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    
                   ),
                 ),
               ),

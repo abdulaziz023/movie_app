@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -23,47 +21,31 @@ class _SearchScreenState extends State<SearchScreen> {
 
   late final ScrollController controller;
 
-  final ValueNotifier<List<MovieModel>> movies = ValueNotifier<List<MovieModel>>([]);
+  List<MovieModel> movies = [];
   String searchText = '';
   int page = 1;
 
-  Timer? timer;
-
-  void throttling(String value) {
-    timer?.cancel();
-
-    timer = Timer(const Duration(seconds: 1), () {
-      onChange(value);
-    });
-  }
-
-  void debouncing(String value) {
-    timer?.cancel();
-
-    timer = Timer(Duration(milliseconds: 500), () {
-      onChange(value);
-    });
-  }
-
   void onChange(String value) async {
-
     searchText = value;
     page = 1;
 
-    movies.value = await repository.getMovies(
+    movies = await repository.getMovies(
       page: page++,
       text: searchText,
     );
+
+    setState(() {});
   }
 
   void pagination() async {
     if (controller.position.pixels == controller.position.maxScrollExtent) {
-      movies.value.addAll(
+      movies.addAll(
         await repository.getMovies(
           page: page++,
           text: searchText,
         ),
       );
+      setState(() {});
     }
   }
 
@@ -79,7 +61,6 @@ class _SearchScreenState extends State<SearchScreen> {
     controller
       ..removeListener(pagination)
       ..dispose();
-    movies.dispose();
     super.dispose();
   }
 
@@ -103,10 +84,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: AppColors.white,
                 ),
                 textAlignVertical: TextAlignVertical.center,
-                onChanged: debouncing,
+                onChanged: onChange,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: context.l10n.search,
+                  hintText: 'Search',
                   hintStyle: context.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textUnselected,
                   ),
@@ -122,15 +103,10 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             Expanded(
-              child: ValueListenableBuilder<List<MovieModel>>(
-                valueListenable: movies,
-                builder: (context, movieList, child) {
-                  return SearchBody(
-                    movies: movieList,
-                    isTyped: searchText.isNotEmpty,
-                    controller: controller,
-                  );
-                },
+              child: SearchBody(
+                movies: movies,
+                isTyped: searchText.isNotEmpty,
+                controller: controller,
               ),
             ),
           ],
@@ -159,7 +135,7 @@ class SearchBody extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(40.0),
           child: Text(
-            context.l10n.findMovie,
+            'Find your movie by Type title, categories, years, etc',
             textAlign: TextAlign.center,
             style: context.textTheme.titleMedium?.copyWith(
               color: AppColors.white,
@@ -178,7 +154,7 @@ class SearchBody extends StatelessWidget {
             children: [
               SvgPicture.asset(AppIcons.noResult),
               Text(
-                context.l10n.weSorry,
+                'We Are Sorry, We Can Not Find The Movie :(',
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleMedium?.copyWith(
                   color: AppColors.white,
@@ -186,7 +162,7 @@ class SearchBody extends StatelessWidget {
                 ),
               ),
               Text(
-                context.l10n.findMovie,
+                'Find your movie by Type title, categories, years, etc',
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleSmall?.copyWith(
                   color: AppColors.greyText,

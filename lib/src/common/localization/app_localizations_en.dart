@@ -26,17 +26,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thereIsNo => 'There is no movie yet';
 
   @override
-  String get findMovie => 'Find your movie Type title,categories,years,etc';
+  String get findMovie => 'Find your movie bu Type title,categories,years,etc';
 
   @override
-  String get chooseLan => 'Choose language';
+  String get chooselan => 'Choose language';
 
   @override
   String get home => 'Home';
 
   @override
-
   String get weSorry => 'We Are Sorry, We Can Not Find The Movie :(';
-
-
 }

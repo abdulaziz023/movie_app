@@ -20,7 +20,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get save => 'Saqlash';
 
   @override
-  String get watchList => 'Ko\'rilganlar';
+  String get watchList => 'Ko\'rish ro\'yxati';
 
   @override
   String get thereIsNo => 'Hali unday kino yuq';
@@ -29,14 +29,11 @@ class AppLocalizationsUz extends AppLocalizations {
   String get findMovie => 'Filmingiz nomini,toifalarini,yillarini va hokazolarni toping';
 
   @override
-  // TODO: implement chooseLan
-  String get chooseLan => 'Tilni tanlang';
+  String get chooselan => 'Tilni tanlang';
 
   @override
-  // TODO: implement home
   String get home => 'Asosiy';
 
   @override
-  // TODO: implement weSorry
   String get weSorry => 'Biz uzr so\'raymiz bunday kino topa olmadik :(';
 }

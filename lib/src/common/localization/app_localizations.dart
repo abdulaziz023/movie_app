@@ -140,8 +140,23 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find your movie bu Type title,categories,years,etc'**
   String get findMovie;
-  String get chooseLan;
+
+  /// No description provided for @chooselan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose language'**
+  String get chooselan;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
   String get home;
+
+  /// No description provided for @weSorry.
+  ///
+  /// In en, this message translates to:
+  /// **'We Are Sorry, We Can Not Find The Movie :('**
   String get weSorry;
 }
 

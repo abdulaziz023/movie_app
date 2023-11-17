@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -25,6 +26,7 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
 
   final ValueNotifier<List<MovieModel>> movies = ValueNotifier<List<MovieModel>>([]);
   int page = 1;
+  bool isLoading=false;
 
   @override
   void initState() {
@@ -35,8 +37,18 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
   }
 
   void getMovies() async {
-    final newMovies = await repository.getMovies(page++);
-    movies.value = [...movies.value, ...newMovies];
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      final newMovies = await repository.getMovies(page++);
+
+      setState(() {
+        movies.value = [...movies.value, ...newMovies];
+        isLoading = false;
+      });
+    }
   }
 
   void pagination() {
@@ -108,7 +120,8 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                   builder: (context, movieList, child) {
                     return GridView.builder(
                       controller: controller,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         mainAxisSpacing: 8,
                         crossAxisSpacing: 8,
@@ -126,19 +139,15 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(16),
                         ),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(16),
-                            ),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                movieList[index].posterPath != null
-                                    ? ApiConst.imageLoadEntry + movieList[index].posterPath!
-                                    : Config.noImage,
-                              ),
-                            ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: movieList[index].posterPath != null
+                                ? ApiConst.imageLoadEntry +
+                                    movieList[index].posterPath!
+                                : Config.noImage,
                           ),
                         ),
                       ),
@@ -147,6 +156,8 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                 ),
               ),
             ),
+            if (isLoading)
+              CircularProgressIndicator(),
           ],
         ),
       ),
