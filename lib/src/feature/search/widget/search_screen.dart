@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -25,7 +27,19 @@ class _SearchScreenState extends State<SearchScreen> {
   String searchText = '';
   int page = 1;
 
+  Timer? timer;
+
+  void throttling(String value) {
+    timer?.cancel();
+
+    timer = Timer(const Duration(seconds: 1), () {
+      onChange(value);
+    });
+  }
+
   void onChange(String value) async {
+    print(value);
+
     searchText = value;
     page = 1;
 
@@ -84,7 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: AppColors.white,
                 ),
                 textAlignVertical: TextAlignVertical.center,
-                onChanged: onChange,
+                onChanged: throttling,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Search',
