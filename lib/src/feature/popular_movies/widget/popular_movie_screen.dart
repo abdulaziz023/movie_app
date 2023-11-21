@@ -23,7 +23,7 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
 
   late final IPopularRepository repository;
 
-  final List<MovieModel> movies = [];
+  final ValueNotifier<List<MovieModel>> movies = ValueNotifier<List<MovieModel>>([]);
   int page = 1;
 
   @override
@@ -35,8 +35,8 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
   }
 
   void getMovies() async {
-    movies.addAll(await repository.getMovies(page++));
-    setState(() {});
+    final newMovies = await repository.getMovies(page++);
+    movies.value = [...movies.value, ...newMovies];
   }
 
   void pagination() {
@@ -80,7 +80,7 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
                 ),
                 child: ListTile(
                   title: Text(
-                    'Search',
+                    context.l10n.search,
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: AppColors.textUnselected,
                     ),
@@ -100,43 +100,50 @@ class _PopularMovieScreenState extends State<PopularMovieScreen> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   page = 1;
-                  movies.clear();
+                  movies.value = [];
                   getMovies();
                 },
-                child: GridView.builder(
-                  controller: controller,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    childAspectRatio: 1 / 1.4,
-                  ),
-                  itemCount: movies.length,
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            MovieDetailScreen(movie: movies[index]),
+                child: ValueListenableBuilder<List<MovieModel>>(
+                  valueListenable: movies,
+                  builder: (context, movieList, child) {
+                    return GridView.builder(
+                      controller: controller,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        childAspectRatio: 1 / 1.4,
                       ),
-                    ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(16),
-                    ),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
+                      itemCount: movieList.length,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MovieDetailScreen(movie: movieList[index]),
+                          ),
+                        ),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(16),
                         ),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                           movies[index].posterPath != null? ApiConst.imageLoadEntry + movies[index].posterPath! : Config.noImage,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(16),
+                            ),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                movieList[index].posterPath != null
+                                    ? ApiConst.imageLoadEntry + movieList[index].posterPath!
+                                    : Config.noImage,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ),

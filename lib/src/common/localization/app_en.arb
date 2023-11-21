@@ -1,4 +1,13 @@
 {
   "hello": "Hello",
-  "whatToWatch":"What do you want to watch?"
+  "whatToWatch":"What do you want to watch?",
+  "search": "Search",
+  "detail": "Detail",
+  "save": "Save",
+  "watchList": "Watch List",
+  "thereIsNo": "There is no movie yet",
+  "findMovie": "Find your movie bu Type title,categories,years,etc",
+  "chooselan": "Choose language",
+  "home": "Home",
+  "weSorry": "We Are Sorry, We Can Not Find The Movie :("
 }

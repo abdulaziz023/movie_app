@@ -16,14 +16,11 @@ class WatchListScreen extends StatefulWidget {
 }
 
 class WatchListScreenState extends State<WatchListScreen> {
-  final List<MovieModel> movies = [];
+  final ValueNotifier<List<MovieModel>> movies = ValueNotifier<List<MovieModel>>([]);
 
   void getMovies() async {
-    movies.clear();
-
-    movies.addAll((await DBService().getMovies()).reversed);
-
-    setState(() {});
+    final List<MovieModel> retrievedMovies = await DBService().getMovies();
+    movies.value = retrievedMovies;
   }
 
   @override
@@ -36,42 +33,47 @@ class WatchListScreenState extends State<WatchListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.main,
-      body: movies.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(50.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(AppIcons.emptyBox),
-                    Text(
-                      'There is no movie yet!',
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.titleMedium?.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+      body: ValueListenableBuilder<List<MovieModel>>(
+        valueListenable: movies,
+        builder: (context, movieList, child) {
+          return movieList.isEmpty
+              ? Center(
+            child: Padding(
+              padding: const EdgeInsets.all(50.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(AppIcons.emptyBox),
+                  Text(
+                    context.l10n.thereIsNo,
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
                     ),
-                    Text(
-                      'Find your movie by Type title, categories, years, etc',
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.titleSmall?.copyWith(
-                        color: AppColors.greyText,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  ),
+                  Text(
+                    context.l10n.findMovie,
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.titleSmall?.copyWith(
+                      color: AppColors.greyText,
+                      fontWeight: FontWeight.w500,
                     ),
-                  ],
-                ),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-              itemCount: movies.length,
-              itemBuilder: (context, index) => MovieItem(
-                movie: movies[index],
+                  ),
+                ],
               ),
             ),
+          )
+              : ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+            itemCount: movieList.length,
+            itemBuilder: (context, index) => MovieItem(
+              movie: movieList[index],
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -23,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   late final ScrollController controller;
 
-  List<MovieModel> movies = [];
+  final ValueNotifier<List<MovieModel>> movies = ValueNotifier<List<MovieModel>>([]);
   String searchText = '';
   int page = 1;
 
@@ -37,29 +37,33 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void debouncing(String value) {
+    timer?.cancel();
+
+    timer = Timer(Duration(milliseconds: 500), () {
+      onChange(value);
+    });
+  }
+
   void onChange(String value) async {
-    print(value);
 
     searchText = value;
     page = 1;
 
-    movies = await repository.getMovies(
+    movies.value = await repository.getMovies(
       page: page++,
       text: searchText,
     );
-
-    setState(() {});
   }
 
   void pagination() async {
     if (controller.position.pixels == controller.position.maxScrollExtent) {
-      movies.addAll(
+      movies.value.addAll(
         await repository.getMovies(
           page: page++,
           text: searchText,
         ),
       );
-      setState(() {});
     }
   }
 
@@ -75,6 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
     controller
       ..removeListener(pagination)
       ..dispose();
+    movies.dispose();
     super.dispose();
   }
 
@@ -98,10 +103,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: AppColors.white,
                 ),
                 textAlignVertical: TextAlignVertical.center,
-                onChanged: throttling,
+                onChanged: debouncing,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Search',
+                  hintText: context.l10n.search,
                   hintStyle: context.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textUnselected,
                   ),
@@ -117,10 +122,15 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             Expanded(
-              child: SearchBody(
-                movies: movies,
-                isTyped: searchText.isNotEmpty,
-                controller: controller,
+              child: ValueListenableBuilder<List<MovieModel>>(
+                valueListenable: movies,
+                builder: (context, movieList, child) {
+                  return SearchBody(
+                    movies: movieList,
+                    isTyped: searchText.isNotEmpty,
+                    controller: controller,
+                  );
+                },
               ),
             ),
           ],
@@ -149,7 +159,7 @@ class SearchBody extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(40.0),
           child: Text(
-            'Find your movie by Type title, categories, years, etc',
+            context.l10n.findMovie,
             textAlign: TextAlign.center,
             style: context.textTheme.titleMedium?.copyWith(
               color: AppColors.white,
@@ -168,7 +178,7 @@ class SearchBody extends StatelessWidget {
             children: [
               SvgPicture.asset(AppIcons.noResult),
               Text(
-                'We Are Sorry, We Can Not Find The Movie :(',
+                context.l10n.weSorry,
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleMedium?.copyWith(
                   color: AppColors.white,
@@ -176,7 +186,7 @@ class SearchBody extends StatelessWidget {
                 ),
               ),
               Text(
-                'Find your movie by Type title, categories, years, etc',
+                context.l10n.findMovie,
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleSmall?.copyWith(
                   color: AppColors.greyText,

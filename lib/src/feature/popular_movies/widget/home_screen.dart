@@ -19,33 +19,32 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   late final PageController controller;
-  int pageNumber = 0;
+  late final ValueNotifier<int> pageNumberNotifier;
 
   late final FocusNode focus;
-
-  void pageChange(int index) {
-    pageNumber = index;
-
-    controller.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.linear,
-    );
-
-    setState(() {});
-  }
 
   @override
   void initState() {
     super.initState();
     controller = PageController();
     focus = FocusNode(debugLabel: 'search_text_field_focus');
+    pageNumberNotifier = ValueNotifier<int>(0);
+  }
+
+  void pageChange(int index) {
+    pageNumberNotifier.value = index;
+    controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
   }
 
   @override
   void dispose() {
     controller.dispose();
     focus.dispose();
+    pageNumberNotifier.dispose();
     super.dispose();
   }
 
@@ -57,23 +56,28 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          switch (pageNumber) {
-            0 => context.l10n.whatToWatch,
-            1 => 'Search',
-            2 => 'Watch list',
-            _ => '',
+        title: ValueListenableBuilder<int>(
+          valueListenable: pageNumberNotifier,
+          builder: (context, pageNumber, _) {
+            return Text(
+              switch (pageNumber) {
+                0 => context.l10n.whatToWatch,
+                1 => context.l10n.search,
+                2 => context.l10n.whatToWatch,
+                _ => '',
+              },
+              style: context.textTheme.titleMedium?.copyWith(
+                color: AppColors.white,
+              ),
+            );
           },
-          style: context.textTheme.titleMedium?.copyWith(
-            color: AppColors.white,
-          ),
         ),
         actions: [
           IconButton(
             onPressed: () => showDialog(
               context: context,
               builder: (context) => AlertDialog.adaptive(
-                title: const Text('Choose language'),
+                title:  Text(context.l10n.chooseLan),
                 actions: [
                   TextButton(
                     onPressed: () async {
@@ -105,6 +109,7 @@ class HomeScreenState extends State<HomeScreen> {
       body: PageView(
         controller: controller,
         physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: pageChange,
         children: const [
           PopularMovieScreen(),
           SearchScreen(),
@@ -117,7 +122,7 @@ class HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(top: 2.0),
           child: NavigationBar(
             onDestinationSelected: pageChange,
-            selectedIndex: pageNumber,
+            selectedIndex: pageNumberNotifier.value,
             destinations: [
               NavigationDestination(
                 icon: SvgPicture.asset(AppIcons.home),
@@ -128,7 +133,7 @@ class HomeScreenState extends State<HomeScreen> {
                     BlendMode.srcATop,
                   ),
                 ),
-                label: 'Home',
+                label: context.l10n.home,
               ),
               NavigationDestination(
                 icon: SvgPicture.asset(AppIcons.search),
@@ -139,7 +144,7 @@ class HomeScreenState extends State<HomeScreen> {
                     BlendMode.srcATop,
                   ),
                 ),
-                label: 'Search',
+                label: context.l10n.search,
               ),
               NavigationDestination(
                 icon: SvgPicture.asset(AppIcons.save),
@@ -150,7 +155,7 @@ class HomeScreenState extends State<HomeScreen> {
                     BlendMode.srcATop,
                   ),
                 ),
-                label: 'Save',
+                label: context.l10n.save,
               ),
             ],
           ),

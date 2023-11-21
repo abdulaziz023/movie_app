@@ -9,4 +9,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whatToWatch => 'What do you want to watch?';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get detail => 'Detail';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get watchList => 'Watch List';
+
+  @override
+  String get thereIsNo => 'There is no movie yet';
+
+  @override
+  String get findMovie => 'Find your movie Type title,categories,years,etc';
+
+  @override
+  String get chooseLan => 'Choose language';
+
+  @override
+  String get home => 'Home';
+
+  @override
+
+  String get weSorry => 'We Are Sorry, We Can Not Find The Movie :(';
+
+
 }

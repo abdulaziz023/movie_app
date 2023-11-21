@@ -1,4 +1,13 @@
 {
   "hello": "Salom",
-  "whatToWatch":"Nima ko'rishni istaysiz?"
+  "whatToWatch": "Nima ko'rishni istaysiz?",
+  "search": "Qidiruv",
+  "detail": "Tafsilot",
+  "save": "Saqlash",
+  "watchList": "Ko'rilganlar",
+  "thereIsNo": "Hali unday kino yuq",
+  "findMovie": "Filmingiz nomini,toifalarini,yillarini va hokazolarni toping",
+  "chooselan": "Tilni tanlang",
+  "home": "Asosiy",
+  "weSorry": "Biz uzr so'raymiz bunday kino topa olmadik :("
 }

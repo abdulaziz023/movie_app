@@ -104,6 +104,45 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What do you want to watch?'**
   String get whatToWatch;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail'**
+  String get detail;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @watchList.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch List'**
+  String get watchList;
+
+  /// No description provided for @thereIsNo.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no movie yet'**
+  String get thereIsNo;
+
+  /// No description provided for @findMovie.
+  ///
+  /// In en, this message translates to:
+  /// **'Find your movie bu Type title,categories,years,etc'**
+  String get findMovie;
+  String get chooseLan;
+  String get home;
+  String get weSorry;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
